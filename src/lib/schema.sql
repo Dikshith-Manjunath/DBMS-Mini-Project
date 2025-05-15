@@ -1,0 +1,13 @@
+-- Active: 1747055924397@@127.0.0.1@5432@dataset_db
+CREATE TABLE IF NOT EXISTS sales (
+  "Transaction ID" INTEGER NOT NULL PRIMARY KEY,
+  Date DATE NOT NULL,
+  "Customer ID" VARCHAR(8) NOT NULL,
+  Gender VARCHAR(6) NOT NULL,
+  Age INTEGER NOT NULL,
+  "Product Category" VARCHAR(11) NOT NULL,
+  Quantity INTEGER NOT NULL,
+  "Price per Unit" INTEGER NOT NULL,
+  "Total Amount" INTEGER NOT NULL
+);
+
