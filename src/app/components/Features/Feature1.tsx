@@ -8,8 +8,7 @@ export default function Feature1() {
           Advanced Analytics
         </h1>
         <p className="mt-2 text-gray-500 dark:text-gray-300">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore.
+          Leverage AI-driven analytics to uncover trends, identify top-performing products, and optimize inventory and pricing. Make informed decisions with interactive dashboards and predictive insights tailored to your sales data.
         </p>
       </div>
     </>

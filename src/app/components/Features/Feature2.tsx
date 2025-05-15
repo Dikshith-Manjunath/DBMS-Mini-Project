@@ -8,8 +8,7 @@ export default function Feature2() {
           Real-time Updates
         </h3>
         <p className="mt-2 text-gray-500 dark:text-gray-300">
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo.
+          Track every transaction as it happens. Our system processes and reflects sales data instantly, keeping your dashboards, inventory, and analytics always up to date — so you never miss a beat in your business operations.
         </p>
       </div>
     </>

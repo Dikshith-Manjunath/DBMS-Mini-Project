@@ -8,8 +8,7 @@ export default function Feature3() {
           Secure Storage
         </h3>
         <p className="mt-2 text-gray-500 dark:text-gray-300">
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-          dolore eu fugiat nulla.
+          All your sales data is securely stored using advanced encryption and backup protocols. With robust access controls and compliance-ready infrastructure, your information stays safe, confidential, and always available when you need it.
         </p>
       </div>
     </>
