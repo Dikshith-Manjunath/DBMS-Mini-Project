@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "dns": "^0.2.2",
     "framer-motion": "^12.11.3",
     "next": "15.3.2",
+    "openai": "^4.98.0",
     "pg": "^8.16.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

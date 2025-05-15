@@ -1,5 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { useRouter } from 'next/navigation';
 
 interface SalesData {
@@ -55,6 +57,7 @@ export default function Database() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+      <Header/>
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Sales Transactions</h1>
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
@@ -138,6 +141,7 @@ export default function Database() {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
