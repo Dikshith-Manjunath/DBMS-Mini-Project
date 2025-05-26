@@ -1,4 +1,5 @@
 -- Active: 1747055924397@@127.0.0.1@5432@dbms_mini_2
+
 CREATE TABLE sales(
    "Transaction ID"   INTEGER  NOT NULL PRIMARY KEY 
   ,Date               DATE  NOT NULL

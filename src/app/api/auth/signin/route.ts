@@ -6,6 +6,15 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
+    // Input validation
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: 'Email and password are required' },
+        { status: 400 }
+      );
+    }
+
+    // Find user by email
     const result = await pool.query(
       'SELECT * FROM users WHERE email = $1',
       [email]
@@ -13,29 +22,40 @@ export async function POST(request: Request) {
 
     const user = result.rows[0];
 
+    // Check if user exists
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    // Compare passwords
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (!validPassword) {
+    if (!passwordMatch) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    // You might want to create a session or JWT token here
+    // Create a user object without the password
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      created_at: user.created_at
+    };
 
-    return NextResponse.json({ message: 'Login successful' });
+    // In a real app, you would create and return a JWT token here
+    return NextResponse.json({
+      message: 'Login successful',
+      user: safeUser
+    });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to login' },
       { status: 500 }
     );
   }

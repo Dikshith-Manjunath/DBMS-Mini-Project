@@ -2,146 +2,178 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useRouter } from 'next/navigation';
+import Navigation from '../components/Navigation';
 
-interface SalesData {
-  "Transaction ID": number;
-  date: string;
-  "Customer ID": string;
-  gender: string;
-  age: number;
-  "Product Category": string;
-  quantity: number;
-  "Price per Unit": number;
-  "Total Amount": number;
+interface TableData {
+  [key: string]: any;
 }
 
+const TABLES = [
+  { value: 'sales', label: 'Sales' },
+  { value: 'categories', label: 'Categories' },
+  { value: 'products', label: 'Products' },
+  { value: 'customers', label: 'Customers' },
+  { value: 'transactions', label: 'Transactions' },
+  { value: 'transaction_details', label: 'Transaction Details' },
+];
+
 export default function Database() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [sales, setSales] = useState<SalesData[]>([]);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState('');
+  const [selectedTable, setSelectedTable] = useState('sales');
+  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const [tableError, setTableError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRows, setTotalRows] = useState(0);
   const limit = 10;
 
-  const fetchSales = async () => {
+  const fetchTableData = async (table: string, page: number) => {
+    setTableLoading(true);
+    setTableError('');
     try {
-      const response = await fetch(`/api/sales?page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Failed to fetch data');
+      const response = await fetch(`/api/tables?table=${table}&page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch table data');
       const data = await response.json();
-      setSales(data.sales);
-      setTotal(data.total);
+      setTableData(data.data);
+      setTotalRows(data.total);
     } catch (err) {
-      setError('Failed to load sales data');
+      setTableError('Failed to load table data');
+      setTableData([]);
     } finally {
-      setIsLoading(false);
+      setTableLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSales();
-  }, [page]);
+    fetchTableData(selectedTable, currentPage);
+  }, [selectedTable, currentPage]);
 
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+  const totalPages = Math.ceil(totalRows / limit);
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-600">
-        {error}
-      </div>
-    );
-  }
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-      <Header/>
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Sales Transactions</h1>
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-900">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Customer</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gender</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Age</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Qty</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {sales.map((sale) => (
-                  <tr key={sale["Transaction ID"]} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale["Transaction ID"]}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{new Date(sale.date).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale["Customer ID"]}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale.gender}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale.age}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale["Product Category"]}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{sale.quantity}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${sale["Price per Unit"]}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${sale["Total Amount"]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Navigation />
+      <div className="p-4 sm:p-6 lg:p-8">
+        <Header />
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Database Tables</h1>
           
-          <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setPage(p => p + 1)}
-                disabled={page * limit >= total}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              >
-                Next
-              </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to{' '}
-                  <span className="font-medium">{Math.min(page * limit, total)}</span> of{' '}
-                  <span className="font-medium">{total}</span> results
-                </p>
-              </div>
-              <div>
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                  <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={() => setPage(p => p + 1)}
-                    disabled={page * limit >= total}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  >
-                    Next
-                  </button>
-                </nav>
-              </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Select Table
+            </label>
+            <select
+              className="p-2 rounded border dark:bg-gray-800 dark:text-white"
+              value={selectedTable}
+              onChange={e => {
+                setSelectedTable(e.target.value);
+                setCurrentPage(1); // Reset to first page on table change
+              }}
+            >
+              {TABLES.map(t => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              {tableLoading ? (
+                <div className="p-8 text-center">Loading...</div>
+              ) : tableError ? (
+                <div className="p-8 text-center text-red-500">{tableError}</div>
+              ) : tableData.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">No data available</div>
+              ) : (
+                <>
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-900">
+                      <tr>
+                        {Object.keys(tableData[0]).map(col => (
+                          <th key={col} className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      {tableData.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          {Object.keys(row).map(col => {
+                            const value = row[col];
+                            let displayValue = String(value);
+                            
+                            // Format values appropriately based on column name and data type
+                            if (value === null) {
+                              displayValue = '-';
+                            } else if (col.toLowerCase().includes('price') || 
+                                       col.toLowerCase().includes('amount') || 
+                                       col.toLowerCase().includes('cost')) {
+                              // Format currency values
+                              displayValue = typeof value === 'number' ? 
+                                `$${value.toFixed(2)}` : displayValue;
+                            } else if (col.toLowerCase().includes('date')) {
+                              // Format dates nicely
+                              try {
+                                const date = new Date(value);
+                                if (!isNaN(date.getTime())) {
+                                  displayValue = date.toLocaleDateString();
+                                }
+                              } catch (e) {
+                                // If date parsing fails, just use the original string
+                              }
+                            }
+                              return (
+                              <td key={col} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{displayValue}</td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
+                    <div className="text-sm text-gray-700 dark:text-gray-300">
+                      Showing rows {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalRows)} of {totalRows}
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 border rounded-md text-sm font-medium
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200
+                          hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        onClick={handleNextPage}
+                        disabled={currentPage >= totalPages}
+                        className="px-4 py-2 border rounded-md text-sm font-medium
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200
+                          hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer/>
     </div>
   );
 }

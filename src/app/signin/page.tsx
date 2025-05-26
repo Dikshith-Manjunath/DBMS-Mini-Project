@@ -23,14 +23,13 @@ export default function SignIn() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
+      const data = await res.json();      if (!res.ok) {
         throw new Error(data.error || 'An error occurred');
       }
 
-      // Redirect to dashboard or home page after successful login
-      router.push('/dashboard');
+      // Set login status and redirect
+      localStorage.setItem('isLoggedIn', 'true');
+      router.push('/database');
     } catch (err: any) {
       setError(err.message);
     }
