@@ -29,7 +29,7 @@ export default function SignIn() {
 
       // Set login status and redirect
       localStorage.setItem('isLoggedIn', 'true');
-      router.push('/database');
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
     }

@@ -29,14 +29,13 @@ export default function SignUp() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
+      const data = await res.json();      if (!res.ok) {
         throw new Error(data.error || 'An error occurred');
       }
 
-      // Redirect to signin page after successful registration
-      router.push('/signin');
+      // Set logged in state and redirect to dashboard
+      localStorage.setItem('isLoggedIn', 'true');
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
     }
