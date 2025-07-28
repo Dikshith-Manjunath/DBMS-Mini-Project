@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+langchain
+langchain-nvidia-ai-endpoints
+langchain-community
+pydantic
+python-dotenv
+psycopg2-binary
+sqlalchemy
+redis

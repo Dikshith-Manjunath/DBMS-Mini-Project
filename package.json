@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.49",
+    "@langchain/core": "^0.3.66",
+    "@langchain/openai": "^0.6.3",
     "bcrypt": "^6.0.0",
     "dns": "^0.2.2",
     "framer-motion": "^12.11.3",
+    "langchain": "^0.3.30",
     "next": "15.3.2",
     "openai": "^4.98.0",
     "pg": "^8.16.0",
