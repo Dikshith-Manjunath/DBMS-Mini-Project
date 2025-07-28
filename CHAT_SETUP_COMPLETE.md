@@ -57,6 +57,7 @@ The AI assistant understands your e-commerce database structure:
 ```bash
 cd python-api
 bash start.sh
+cd /home/dikshith/Documents/Projects/AI/DBMS-Mini-Project/python-api && source venv/bin/activate && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### 2. Start Next.js Frontend
