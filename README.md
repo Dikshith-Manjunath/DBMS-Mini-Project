@@ -15,7 +15,7 @@ This is a [Next.js](https://nextjs.org) project designed as a database managemen
 First, clone the repository and install dependencies:
 
 ```bash
-git clone <repository-url>
+git clone [<repository-url>](https://github.com/Dikshith-Manjunath/DBMS-Mini-Project.git)
 cd DBMS-Mini-Project
 npm install
 ```
