@@ -157,7 +157,9 @@ def get_or_create_memory(session_id: str) -> ConversationBufferMemory:
     return conversation_memories[session_id]
 
 def generate_fallback_response(message: str) -> str:
-    """Generate fallback response when LLM is not available"""
+    """Generate fallbaccd python-api
+bash start.sh
+cd /home/dikshith/Documents/Projects/AI/DBMS-Mini-Project/python-api && source venv/bin/activate && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reloadk response when LLM is not available"""
     message_lower = message.lower()
     
     if any(word in message_lower for word in ["hello", "hi", "hey", "greetings"]):
